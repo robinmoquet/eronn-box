@@ -42,7 +42,24 @@ class ContainerController extends AbstractController
         $container = $this->containerRepository->find($id);
         if ($container === null) throw new \Exception("Container not found !");
 
+        $this->containerManager->mount($container);
+        dd('end');
         $this->bus->dispatch(new MountContainerMessage($container));
         return new JsonResponse(['res' => 'ok']);
     }
+
+    #[Route('/create', name: 'create')]
+    public function create(): Response
+    {
+        $options = [
+            "name" => "test4",
+            "size" => "1M",
+            "password" => "test",
+        ];
+
+        $this->containerManager->create($options);
+
+        return new JsonResponse(["res" => "ok"]);
+    }
+
 }

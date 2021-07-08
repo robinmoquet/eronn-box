@@ -4,25 +4,13 @@
 namespace App\Storage;
 
 
+use Aws\S3\S3Client;
 use OpenStack\OpenStack;
 
 interface ConfigInterface
 {
 
-    function getOpenStack(): OpenStack;
-
-    /**
-     * Name of the storage
-     *
-     * @return string
-     */
-    function getName(): string;
-
-    /**
-     * Path to storage
-     *
-     * @return string
-     */
-    function getPath(): string;
+    public function getClient(): S3Client;
+    public function getBucketName(): string;
 
 }

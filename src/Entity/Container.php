@@ -23,17 +23,7 @@ class Container
     private $name;
 
     /**
-     * @ORM\Column(type="string", length=255)
-     */
-    private $path;
-
-    /**
-     * @ORM\Column(type="string", length=255)
-     */
-    private $mountDirectory;
-
-    /**
-     * @ORM\Column(type="integer")
+     * @ORM\Column(type="integer", type="bigint")
      */
     private $size;
 
@@ -54,43 +44,9 @@ class Container
         return $this;
     }
 
-    public function getPath(): ?string
+    public function getSize(): int
     {
-        return $this->path;
-    }
-
-    public function setPath(string $path): self
-    {
-        $this->path = $path;
-
-        return $this;
-    }
-
-    public function getMountDirectory(): ?string
-    {
-        return $this->mountDirectory;
-    }
-
-    public function setMountDirectory(string $mountDirectory): self
-    {
-        $this->mountDirectory = $mountDirectory;
-
-        return $this;
-    }
-
-    public function getSize(): ?string
-    {
-        $size = $this->size;
-        $unit = 'Ko';
-        if ($size > 1000) {
-            $size = round($size / 1000);
-            $unit = 'Mo';
-        }
-        if ($size > 1000) {
-            $size = round($size / 1000);
-            $unit = 'Go';
-        }
-        return $size . " " . $unit;
+        return $this->size;
     }
 
     public function setSize(int $size): self

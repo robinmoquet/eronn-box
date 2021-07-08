@@ -37,6 +37,11 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
      */
     private $password;
 
+    /**
+     * @ORM\Column(type="string", length=255)
+     */
+    private $bucketId;
+
     public function getId(): ?int
     {
         return $this->id;
@@ -70,7 +75,6 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     public function getRoles(): array
     {
         $roles = $this->roles;
-        // guarantee every user at least has ROLE_USER
         $roles[] = 'ROLE_USER';
 
         return array_unique($roles);
@@ -122,6 +126,18 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     public function getUsername(): string
     {
         return $this->getEmail();
+    }
+
+    public function getBucketId(): ?string
+    {
+        return $this->bucketId;
+    }
+
+    public function setBucketId(string $bucketId): self
+    {
+        $this->bucketId = $bucketId;
+
+        return $this;
     }
 }
 

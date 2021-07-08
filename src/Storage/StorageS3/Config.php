@@ -6,54 +6,45 @@ namespace App\Storage\StorageS3;
 
 use App\Storage\ConfigInterface;
 use App\Util\Utils;
+use Aws\S3\S3Client;
+use Aws\Sdk;
 use OpenStack\OpenStack;
 use Symfony\Component\Yaml\Yaml;
 
 class Config implements ConfigInterface
 {
     private array $config;
-    private ?OpenStack $openStack = null;
+    private Sdk $sdk;
+    private S3Client $client;
 
     public function __construct(Utils $utils)
     {
         if ($utils->isProd()) {
-            $this->config = Yaml::parseFile(dirname(dirname(__DIR__)) . '/config/storage/config.yaml');
+            $config = Yaml::parseFile(dirname(dirname(dirname(__DIR__))) . '/config/storage/config.yaml');
         } else {
-            $this->config = Yaml::parseFile(dirname(dirname(__DIR__)) . '/config/storage/config_dev.yaml');
+            $config = Yaml::parseFile(dirname(dirname(dirname(__DIR__))) . '/config/storage/config_dev.yaml');
         }
 
-        $this->setOpenStack();
+        $this->config = $config["storage"];
+        $sdkConfig = [
+            'version' => $this->config['version'],
+            'region' => $this->config['region']
+        ];
 
+        $this->sdk = new Sdk($sdkConfig);
+        $this->client = $this->sdk->createS3();
+        $this->client->registerStreamWrapper();
     }
 
-    function getName(): string
+    public function getClient(): S3Client
     {
-        return $this->config["storage"]['name'];
+        return $this->client;
     }
 
-    function getPath(): string
+    public function getBucketName(): string
     {
-        return $this->config["storage"]['path'];
+        return $this->config['name'];
     }
 
-    function getOpenStack(): OpenStack
-    {
-        return $this->openStack;
-    }
-
-    private function setOpenStack(): void
-    {
-        if ($this->openStack === null) {
-            $this->openStack = new OpenStack([
-                'authUrl' => '{authUrl}',
-                'region'  => '{region}',
-                'user'    => [
-                    'id'       => '{userId}',
-                    'password' => '{password}'
-                ],
-                'scope'   => ['project' => ['id' => '{projectId}']]
-            ]);
-        }
-    }
 }
 
