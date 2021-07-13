@@ -17,6 +17,6 @@ final class MountContainerMessageHandler implements MessageHandlerInterface
 
     public function __invoke(MountContainerMessage $message)
     {
-        $this->containerManager->mount($message->getContainer());
+        $this->containerManager->mount($message->getContainer(), $message->getPassword());
     }
 }

@@ -4,6 +4,7 @@
 namespace App\Util;
 
 
+use App\Config\VeraCrypt;
 use App\Entity\Container;
 use Symfony\Component\DependencyInjection\ParameterBag\ParameterBagInterface;
 
@@ -29,5 +30,10 @@ class Utils
     public function isDev(): bool
     {
         return $this->params->get('kernel.environment') === "dev";
+    }
+
+    public function getPercentDownload(int $bytesProcess, int $size): int
+    {
+        return (int) round(($bytesProcess / $size) * 100);
     }
 }

@@ -4,15 +4,14 @@
 namespace App\Storage;
 
 
-use OpenStack\ObjectStore\v1\Models\Container;
-use OpenStack\ObjectStore\v1\Models\StorageObject;
+use App\Entity\Container;
 
 interface ManagerInterface
 {
 
-    public function getObject(string $objectName);
-    public function putObject(string $objectName, $objectBody);
-    public function deleteObject(string $objectName);
-    public function downloadObject(string $objectName);
+    public function getObject(Container $container);
+    public function putObject(Container $container, $objectBody);
+    public function deleteObject(Container $container);
+    public function downloadObject(Container $container);
 
 }

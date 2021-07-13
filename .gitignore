@@ -11,6 +11,9 @@
 /vendor/
 ###< symfony/framework-bundle ###
 
+# App
+tmpStorage
+
 # misc
 .DS_Store
 .idea

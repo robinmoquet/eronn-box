@@ -3,6 +3,8 @@
 namespace App\Entity;
 
 use App\Repository\UserRepository;
+use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 use JetBrains\PhpStorm\Pure;
 use Symfony\Component\Security\Core\User\PasswordAuthenticatedUserInterface;
@@ -35,12 +37,22 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
      * @var string The hashed password
      * @ORM\Column(type="string")
      */
-    private $password;
+    private string $password;
 
     /**
      * @ORM\Column(type="string", length=255)
      */
-    private $bucketId;
+    private string $keysecure;
+
+    /**
+     * @ORM\OneToMany(targetEntity=Container::class, mappedBy="user")
+     */
+    private $containers;
+
+    public function __construct()
+    {
+        $this->containers = new ArrayCollection();
+    }
 
     public function getId(): ?int
     {
@@ -122,20 +134,49 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
         // $this->plainPassword = null;
     }
 
-    #[Pure]
     public function getUsername(): string
     {
         return $this->getEmail();
     }
 
-    public function getBucketId(): ?string
+    public function getKeysecure(): string
     {
-        return $this->bucketId;
+        return $this->keysecure;
     }
 
-    public function setBucketId(string $bucketId): self
+    public function setKeysecure(string $keysecure): self
     {
-        $this->bucketId = $bucketId;
+        $this->keysecure = $keysecure;
+
+        return $this;
+    }
+
+    /**
+     * @return Collection|Container[]
+     */
+    public function getContainers(): Collection
+    {
+        return $this->containers;
+    }
+
+    public function addContainer(Container $container): self
+    {
+        if (!$this->containers->contains($container)) {
+            $this->containers[] = $container;
+            $container->setUser($this);
+        }
+
+        return $this;
+    }
+
+    public function removeContainer(Container $container): self
+    {
+        if ($this->containers->removeElement($container)) {
+            // set the owning side to null (unless already changed)
+            if ($container->getUser() === $this) {
+                $container->setUser(null);
+            }
+        }
 
         return $this;
     }

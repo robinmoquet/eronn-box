@@ -24,9 +24,10 @@ class ContainerManager
         $this->veraCryptManager = $veraCryptManager;
     }
 
-    function mount(Container $container)
+    function mount(Container $container, string $password)
     {
-        $this->storageManager->downloadObject($container->getName());
+        $this->storageManager->downloadObject($container);
+        $this->veraCryptManager->decryptContainer($container, $password);
     }
 
     function create(array $options)
